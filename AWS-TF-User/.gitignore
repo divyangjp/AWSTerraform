@@ -1,0 +1,5 @@
+# DO NOT TRACK terraform.tfstate
+# As it contains access key secret in plaintext
+# for 'terraforming_user'
+
+terraform.tfstate
