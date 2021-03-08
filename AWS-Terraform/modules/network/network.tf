@@ -3,7 +3,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
 
   tags = {
-    name = "${var.env}-ctest-vpc"
+    Name = "${var.env}-ctest-vpc"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
@@ -14,7 +14,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags = {
-    name = "${var.env}-ctest-igw"
+    Name = "${var.env}-ctest-igw"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
@@ -33,7 +33,7 @@ resource "aws_nat_gateway" "natgw" {
   depends_on = [aws_internet_gateway.igw]
 
   tags = {
-    name = "ctest-nat"
+    Name = "ctest-nat"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
@@ -48,9 +48,10 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    name = "${var.env}-${element(var.azones, count.index)}-pub-subnet"
+    Name = "${var.env}-${element(var.azones, count.index)}-pub-subnet"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
+    type = "Public"
   }
 }
 
@@ -63,9 +64,10 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    name = "${var.env}-${element(var.azones, count.index)}-priv-subnet"
+    Name = "${var.env}-${element(var.azones, count.index)}-priv-subnet"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
+    type = "Private"
   }
 }
 
@@ -74,7 +76,7 @@ resource "aws_route_table" "private_rtable" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags = {
-    name = "${var.env}-priv-route-table"
+    Name = "${var.env}-priv-route-table"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
@@ -85,7 +87,7 @@ resource "aws_route_table" "public_rtable" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags = {
-    name = "${var.env}-public-route-table"
+    Name = "${var.env}-public-route-table"
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
@@ -141,4 +143,8 @@ resource "aws_security_group" "default" {
     env = "${var.env}"
     resource_group = "${var.rgroup}"
   }
+}
+
+output "vpc-id" {
+  value = aws_vpc.vpc.id
 }
