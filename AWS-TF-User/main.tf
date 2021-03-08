@@ -134,3 +134,36 @@ resource "aws_iam_user_group_membership" "tf_user_group" {
 output "secret" {
   value = aws_iam_access_key.tf_user_accesskey.encrypted_secret
 }
+
+# Create aws S3 bucket for terraform.tfstate backup
+resource "aws_s3_bucket" "continotest-terraform-state" {
+    bucket = "continotest-terraform-state"
+    acl = "private"
+
+    versioning {
+        enabled = true
+    }
+
+    tags = {
+        env = "test"
+        purpose = "contino test"
+    }
+}
+
+# Create dynamodb table for tfstate locking
+resource "aws_dynamodb_table" "continotest-dynamodb-tfstate-lock" {
+    name           = "continotest-dynamodb-tfstate-lock"
+    hash_key       = "LockID"
+    read_capacity  = 20
+    write_capacity = 20
+
+    attribute {
+        name = "LockID"
+        type = "S"
+    }
+
+    tags = {
+        env = "test"
+        purpose = "contino test"
+    }
+}
