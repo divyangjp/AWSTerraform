@@ -1,3 +1,7 @@
+locals {
+  availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
+}
+
 data "aws_subnet_ids" "private_subs" {
   vpc_id = module.network.vpc-id
 
@@ -23,7 +27,9 @@ data "aws_ami" "ubuntu-1604" {
 }
 
 module "network" {
-  
+  source = "./modules/network"
+  azones = "${local.availability_zones}"
+  rgroup = "ctest"
 }
 
 module "app-instances" {

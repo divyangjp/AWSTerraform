@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 terraform {
-     backend “s3” {
+     backend "s3" {
          encrypt = true
          bucket = "continotest-terraform-state"
          dynamodb_table = "continotest-dynamodb-tfstate-lock"
