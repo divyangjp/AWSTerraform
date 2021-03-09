@@ -53,7 +53,7 @@ $ terraform plan -out=terraform.tfplan
 $ terraform apply -input=false terraform.tfplan
 ```
 
-The `Outputs` should contain three instance IDs and key-pair map consisting of Public-key and Private-key. 
-
+The `Outputs` should contain three instance IDs and key-pair map consisting of Public-key and Private-key.  
+`terraform.tfstate` file is backed up in S3 bucket `continotest-terraform-state`.  
 
 #### AGAIN - In case of queries, please reach out to `divyang.jp@gmail.com` ####
