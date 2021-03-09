@@ -23,6 +23,11 @@ variable "key_name" {
   default = ""
 }
 
+variable "security_group_ids" {
+  type = list(string)
+  default = []
+}
+
 ### Data blocks ###
 
 data "aws_subnet" "this" {
@@ -39,6 +44,7 @@ resource "aws_instance" "this" {
   availability_zone = var.availability_zone
   subnet_id         = var.subnet_name == "" ? null : data.aws_subnet.this.id
   key_name          = var.key_name
+  vpc_security_group_ids = var.security_group_ids
   tags = {
     Name = var.name_tag
   }
