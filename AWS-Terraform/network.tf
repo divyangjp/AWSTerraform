@@ -203,11 +203,3 @@ resource "aws_security_group" "allow_ssh_in_vpc" {
     env = var.env
   }
 }
-
-output "vpc-id" {
-  value = aws_vpc.vpc.id
-}
-
-output "private_subnet_ids" {
-    value = "${join(",", aws_subnet.private_subnet.*.id)}"
-}

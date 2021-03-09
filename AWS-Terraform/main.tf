@@ -1,11 +1,3 @@
-#data "aws_subnet_ids" "private_subs" {
-#  vpc_id = network.vpc-id
-#
-#  tags = {
-#    type = "Private"
-#  }
-#}
-
 data "aws_ami" "ubuntu-1604" {
     most_recent = true
 
@@ -22,12 +14,8 @@ data "aws_ami" "ubuntu-1604" {
     owners = ["099720109477"] # Canonical
 }
 
-#module "network" {
-#  source = "./modules/network"
-#  azones = local.availability_zones
-#  rgroup = "ctest"
-#}
-
+# One intance per availability zone and private subnet
+# Total 3
 module "app-private-instances" {
   source = "./modules/ec2"
   count = length(aws_subnet.private_subnet)
@@ -40,7 +28,8 @@ module "app-private-instances" {
   name_tag = "AppInst0${count.index + 1}"
 }
 
-# Jumphost to access instances in private subnet
+# One jumphost in public subnet to ssh into 
+# instances in private subnets
 module "app-jumphost" {
   source = "./modules/ec2"
   count = 1
@@ -56,4 +45,15 @@ module "app-jumphost" {
 module "key-pair" {
   source = "./modules/key-pair"
   key_name = "ctest-key-pair"
+}
+
+output "instance-ids" {
+  value = module.app-private-instances[*].ec2-instance-id
+}
+
+output "key-pair" {
+  value = map(
+    "public-key" , module.key-pair.public_key,
+    "private-key" , module.key-pair.private_key
+    )
 }
