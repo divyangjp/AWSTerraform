@@ -1,3 +1,4 @@
+# Create network from grounds up
 
 locals {
   availability_zones = ["${var.region}a", "${var.region}b", "${var.region}c"]
@@ -6,6 +7,8 @@ locals {
 # Create vpc
 resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
+  enable_dns_support = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "${var.env}-ctest-vpc"
@@ -57,6 +60,8 @@ resource "aws_subnet" "public_subnet" {
     env = "${var.env}"
     resource_group = "${var.rgroup}"
     type = "Public"
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -73,6 +78,8 @@ resource "aws_subnet" "private_subnet" {
     env = "${var.env}"
     resource_group = "${var.rgroup}"
     type = "Private"
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
