@@ -54,12 +54,9 @@ variable "asg_max_size_by_az" {
   default = 3
 }
 variable "asg_avg_cpu" {
-  type        = number
-  description = "Average CPU threshold to autoscale EKS EC2 instances."
+  default = 50
 }
 variable "spot_term_helm_chart_name" {
-  type = string
-  description = "EKS Spot termination handler Helm chart name."
   default = "aws-node-termination-handler"
 }
 variable "spot_term_helm_chart_repo" {
