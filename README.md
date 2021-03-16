@@ -22,7 +22,7 @@ There are three parts to this solution
 #### 1. AWS-TF-User : ####
    This module creates terraforming user with necessary permission, S3 bucket for tfstate backup and dynamodb for state locking.
 Terraform apply this using admin level user.  
-Once created, use `access-key-id` and `access-key-secret` of `terraforming-user` to create infrastructure in module `AWS-Terraform`  
+Once created, use `access-key-id` and `access-key-secret` of `terraforming_user` to create infrastructure in module `AWS-Terraform`  
 `access-key-id` and `access-key-secret` can be fetched from terraform.tfstate local file  
 
 #### 2. AWS-Terraform : ####
