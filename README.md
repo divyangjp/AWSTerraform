@@ -48,6 +48,7 @@ IMP: `terraform.tfstate` file is backed-up in S3 bucket created as part of `AWS-
 
 Configure Admin user `access_key` and `secret_key` using `aws` cli.  
 Admin user is per-requisite and created manually before running this.  
+Once, admin user is configured correctly using `aws` cli, proceed furhter. 
 
 ```
 $ cd AWS-TF-User
@@ -57,9 +58,10 @@ $ terraform apply -input=false terraform.tfplan
 Once applied, open `terraform.tfstate` file. Get `id (access_key)` and `secret (secret_key)` for `terraforming_user`. Search for `aws_iam_access_key` in tfstate file for quick access to `id` and `secret` values.  
 
 Using `aws` cli, configure new profile for `terraforming_user`. Before running next steps, make sure `aws` cli profile is set to terraforming_user.  
-```$ aws configure --profile=tf_user```
-Use below command to change default profile
-```$ export AWS_DEFAULT_PROFILE=tf_user```
+```$ aws configure --profile=tf_user```  
+
+Use below command to change default profile  
+```$ export AWS_DEFAULT_PROFILE=tf_user```  
 
 > One IMPORTANT step before proceeding further  
 ```sh
@@ -90,15 +92,19 @@ $ cp ./kubeconfig_eksdev ~/.kube/config
 $ cd ..
 $ kubectl apply -f ./k8s/
 
+# To check if pods are getting created,  
+$ kubectl get pods
+
 # ELB creation might take some time. Check progress using
 $ kubectl get svc
 ```
 Once ELB is created, service `nginxdepservice` will have `ExternalIP` assigned which will look something like `a7bd84f8bf0a643c38fbb385cc91ef98-1487056810.ap-southeast-2.elb.amazonaws.com`  
-Open your favorite browser and copy/paste the `ExternalIP` value in the url.  
+
+Open your favorite browser and copy/paste the `ExternalIP` value in the url bar.  
 Hit Enter and it should open default Nginx page!  
 
 `terraform.tfstate` file is backed up in S3 bucket `<UNIQUE-S3-BUCKET-NAME>`  
 
-I would have loved to create CI/CD pipeline for this, but due to time-contstraint couldn't work on it!  
+I would have loved to create CI/CD pipeline for this. But due to time-contstraint, couldn't work on it!  
 
 #### AGAIN - In case of queries, please reach out to `divyang.jp@gmail.com` ####
