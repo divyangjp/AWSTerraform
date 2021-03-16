@@ -5,7 +5,7 @@ I appreciate your understanding!
 
 ## Infrastructure Architecture Diagram ##
 <p align="center">
-<img src="https://gitlab.com/divyang.jp/continotest/-/raw/86b7d2c920c89f59481e8671d744046607ba0236/Architecture-Diagram.png?inline=false">
+<img src="https://gitlab.com/divyang.jp/estimateone/-/raw/master/Architecture-Diagram.png?inline=false">
 </p>
 
 ## Solution Brief ##
