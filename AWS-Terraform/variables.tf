@@ -5,6 +5,9 @@
 # Terraform code. If you create a variable with no default, the user will be
 # prompted to enter it (or define it via config file or command line flags.)
 
+#variable "tf_state_bucket" {
+#  # NO DEFAULT VALUE
+#}
 variable "region" {
   default = "ap-southeast-2"
 }
@@ -36,6 +39,11 @@ variable "eks_cluster_name" {
 }
 variable "eks_cluster_version" {
   default = "1.18"
+}
+
+# terraforming_user is created as part of AWS-TF-User
+variable "eks_admin_users" {
+  default = ["terraforming_user"]
 }
 
 variable "worker_asg_instance_types" {

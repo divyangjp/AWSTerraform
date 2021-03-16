@@ -8,6 +8,12 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
+    kubernetes = {
+      version = "~> 1.9"
+    }
+    helm = {
+      version = "~> 1.2"
+    }
   }
 }
 
@@ -17,11 +23,22 @@ provider "aws" {
 }
 
 terraform {
-     backend "s3" {
-         encrypt = true
-         bucket = "continotest-terraform-state"
-         dynamodb_table = "continotest-dynamodb-tfstate-lock"
-         region = "ap-southeast-2"
-         key = "ctest/terraform.tfstate"
-     }
+  backend "s3" {}
 }
+
+data "aws_caller_identity" "current" {} # current user Account ID and ARN
+
+# The var.tf_state_bucket is provided at 
+# `terraform init` invocation.
+# e.g. 
+#   terraform init \ 
+#
+#data "terraform_remote_state" "state" {
+#  backend = "s3"
+  #config {
+    #bucket = "${var.tf_state_bucket}"
+    #lock_table = "${var.tf_state_table}"
+    #region = "${var.region}"
+    #key = "${var.key}"
+  #}
+#}

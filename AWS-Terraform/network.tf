@@ -35,6 +35,8 @@ resource "aws_eip" "nat_eip" {
 }
 
 # NAT Gateway
+# For cost saving, create one NAT gateway only for now
+# For redundancy across AZs, create one NAT gw per AZ
 resource "aws_nat_gateway" "natgw" {
   allocation_id = "${aws_eip.nat_eip.id}"
   subnet_id = "${element(aws_subnet.public_subnet.*.id, 0)}"

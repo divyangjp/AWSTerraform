@@ -58,6 +58,7 @@ resource "aws_iam_policy" "terraforming_policy" {
           "cloudfront:*",
           "route53:*",
           "ecr:*",
+          "eks:*",
           "logs:*",
           "ecs:*",
           "application-autoscaling:*",
@@ -136,8 +137,8 @@ output "secret" {
 }
 
 # Create aws S3 bucket for terraform.tfstate backup
-resource "aws_s3_bucket" "continotest-terraform-state" {
-    bucket = "continotest-terraform-state"
+resource "aws_s3_bucket" "store-terraform-state" {
+    bucket = var.s3-bucket-tfstate-store
     acl = "private"
 
     versioning {
@@ -145,14 +146,14 @@ resource "aws_s3_bucket" "continotest-terraform-state" {
     }
 
     tags = {
-        env = "test"
-        purpose = "contino test"
+        env = var.env
+        resource_group = var.rgroup
     }
 }
 
 # Create dynamodb table for tfstate locking
-resource "aws_dynamodb_table" "continotest-dynamodb-tfstate-lock" {
-    name           = "continotest-dynamodb-tfstate-lock"
+resource "aws_dynamodb_table" "dynamodb-tfstate-lock" {
+    name           = "${var.env}-dynamodb-tfstate-lock"
     hash_key       = "LockID"
     read_capacity  = 20
     write_capacity = 20
@@ -163,7 +164,7 @@ resource "aws_dynamodb_table" "continotest-dynamodb-tfstate-lock" {
     }
 
     tags = {
-        env = "test"
-        purpose = "contino test"
+        env = var.env
+        resource_group = var.rgroup
     }
 }

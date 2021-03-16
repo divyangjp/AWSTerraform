@@ -3,6 +3,7 @@
 .DS_Store
 example.tf
 terraform.tfplan
+*.tfplan
 terraform.tfstate
 *.backup
 ./*.tfstate
@@ -22,3 +23,6 @@ terraform.tfstate
 
 # Coverage
 coverage.txt
+
+#k8s
+kubeconfig*

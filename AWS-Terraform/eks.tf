@@ -6,6 +6,14 @@ data "aws_availability_zones" "available_azs" {
 }
 
 locals {
+  eks_admin_users_map = [
+    for admin_user in var.eks_admin_users :
+    {
+      userarn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${admin_user}"
+      username = admin_user
+      groups   = ["system:masters"]
+    }
+  ]
   worker_groups_launch_template = [
   {
     override_instance_types = var.worker_asg_instance_types
@@ -24,19 +32,19 @@ resource "aws_iam_role" "eks_iam_role" {
   name = "eks_iam_role"
 
   assume_role_policy = <<POLICY
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      }
-    ]
-  }
-  POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "eks_iam_role_policy_attachment" {
@@ -60,10 +68,12 @@ module "eks_cluster" {
   cluster_version  = var.eks_cluster_version
   write_kubeconfig = true
 
-  subnets = aws_subnet.private_subnets.tags["Name"]
+  subnets = aws_subnet.private_subnet[*].id
   vpc_id  = aws_vpc.vpc.id
 
   worker_groups_launch_template = local.worker_groups_launch_template
+  map_users = local.eks_admin_users_map
+  depends_on = [aws_subnet.private_subnet]
 }
 
 # Get cluster and cluster_auth for cert and token
@@ -79,7 +89,6 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token                  = data.aws_eks_cluster_auth.cluster_auth.token
   load_config_file       = false
-  version                = "~> 1.9"
 }
 
 provider "helm" {
@@ -89,7 +98,6 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster_auth.token
     load_config_file       = false
   }
-  version = "~> 1.2"
 }
 
 # Spot instance termination handler chart
