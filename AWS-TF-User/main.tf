@@ -46,6 +46,7 @@ resource "aws_iam_policy" "terraforming_policy" {
           "apigateway:*",
           "ec2:*",
           "rds:*",
+          "secretsmanager:*",
           "s3:*",
           "sns:*",
           "states:*",
@@ -167,4 +168,14 @@ resource "aws_dynamodb_table" "dynamodb-tfstate-lock" {
         env = var.env
         resource_group = var.rgroup
     }
+}
+
+# Create aws secretmanager secret for rds taskdb password
+
+resource "aws_secretsmanager_secret" "pg_taskdb_secret" {
+  name = "pg_taskdb_secret"
+}
+resource "aws_secretsmanager_secret_version" "pg_taskdb_version" {
+  secret_id     = aws_secretsmanager_secret.pg_taskdb_secret.id
+  secret_string = var.pg_taskdb_password
 }
