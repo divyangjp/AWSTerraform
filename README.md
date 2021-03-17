@@ -35,6 +35,8 @@ Once created, use `access-key-id` and `access-key-secret` of `terraforming_user`
    * One jumphost EC2 instance for SSH access to private k8s instances
    * Security groups and route tables
    * ELB loadbalancer as part of Nginx sample app
+   * `RDS (PostgreSQL)` db spread across 3 availability zones
+   * Password and other secrets in `AWS Secrets Manager`
   
 #### 3. k8s : ####
   Sample nginx kubernetes deployment and service.  
@@ -51,6 +53,10 @@ Once, admin user is configured correctly using `aws` cli, proceed furhter.
 ```
 $ cd AWS-TF-User
 $ terraform plan -var 's3-bucket-tfstate-store=<UNIQUE-S3-BUCKET-NAME>' -out=terraform.tfplan
+
+# plan command will ask for value of `pg_taskdb_password` variable which will be stored into Secrets Manager
+# and used by RDS-PostgreSQL
+
 $ terraform apply -input=false terraform.tfplan
 ```
 Once applied, open `terraform.tfstate` file. Get `id (access_key)` and `secret (secret_key)` for `terraforming_user`. Search for `aws_iam_access_key` in tfstate file for quick access to `id` and `secret` values.  
