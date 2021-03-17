@@ -13,9 +13,7 @@ Machine with
 All these packages are standard and available across Linux and MacOS
 
 ## Infrastructure Architecture Diagram ##
-<p align="center">
-<img src="https://gitlab.com/divyang.jp/estimateone/-/raw/master/Architecture-Diagram.png?inline=false">
-</p>
+![Architecture Diagram](Architecture-Diagram.png)
 
 ## Solution Brief ##
 There are three parts to this solution
