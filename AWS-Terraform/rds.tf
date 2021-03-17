@@ -12,9 +12,18 @@ locals {
   taskdb_password = data.aws_secretsmanager_secret_version.pg_taskdb_version.secret_string
 }
 
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = "rds_subnet_group"
+  subnet_ids = [aws_subnet.private_subnet[0].id, aws_subnet.private_subnet[1].id, aws_subnet.private_subnet[2].id]
+
+  tags = {
+    Name = "RDS Subnet Group"
+  }
+}
+
 resource "aws_db_instance" "pg-taskdb" {
   allocated_storage    = 5
-  db_subnet_group_name = aws_subnet.private_subnet
+  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
   engine               = "postgres"
   engine_version       = "10"
   identifier           = "pg-taskdb"

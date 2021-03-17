@@ -128,6 +128,13 @@ resource "helm_release" "spot_termination_handler" {
   depends_on = [module.eks_cluster]
 }
 
+resource "helm_release" "aws_secret_injector" {
+  name = "secret-inject"
+  chart = "secret-inject"
+  repository = "https://aws-samples.github.io/aws-secret-sidecar-injector/"
+  namespace = "kube-system"
+}
+
 resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
   count = length(local.worker_groups_launch_template)
 
