@@ -6,6 +6,7 @@ data "aws_availability_zones" "available_azs" {
 }
 
 locals {
+  aws_account_id = data.aws_caller_identity.current.account_id
   eks_admin_users_map = [
     for admin_user in var.eks_admin_users :
     {
@@ -66,6 +67,7 @@ module "eks_cluster" {
   version          = "12.1.0"
   cluster_name     = var.eks_cluster_name
   cluster_version  = var.eks_cluster_version
+  enable_irsa      = true
   write_kubeconfig = true
 
   subnets = aws_subnet.private_subnet[*].id
@@ -89,6 +91,21 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
   token = data.aws_eks_cluster_auth.cluster_auth.token
   load_config_file = false
+}
+
+# Create service account for automated access to AWS Secrets store
+# name must match eks-irsa.tf k8s_service_account_name
+resource "kubernetes_service_account" "aws-eks-secrets-sa" {
+  metadata {
+    name = "aws-eks-secrets-sa"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn" = "arn:aws:iam::${local.aws_account_id}:role/eks-secrets-manager"
+    }
+  }
+  automount_service_account_token = true
+
+  depends_on = [module.iam_assumable_role_admin]
 }
 
 provider "helm" {
@@ -125,3 +142,7 @@ resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
     target_value = var.asg_avg_cpu
   }
 }
+
+#output "oidc_provider_arn" {
+#  value = module.cluster.oidc_provider_arn
+#}
