@@ -22,7 +22,7 @@ locals {
     asg_max_size = var.asg_max_size_by_az * length(data.aws_availability_zones.available_azs.zone_ids)
     kubelet_extra_args = "--node-labels=node.kubernetes.io/lifecycle=spot" # use Spot EC2 instances
     #public_ip = true
-  },
+  }
   ]
 }
 
@@ -85,18 +85,18 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 }
 
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
+  host = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster_auth.token
-  load_config_file       = false
+  token = data.aws_eks_cluster_auth.cluster_auth.token
+  load_config_file = false
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
+    host = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-    token                  = data.aws_eks_cluster_auth.cluster_auth.token
-    load_config_file       = false
+    token = data.aws_eks_cluster_auth.cluster_auth.token
+    load_config_file = false
   }
 }
 
@@ -107,6 +107,8 @@ resource "helm_release" "spot_termination_handler" {
   repository = var.spot_term_helm_chart_repo
   version    = var.spot_term_helm_chart_version
   namespace  = var.spot_term_helm_chart_namespace
+
+  depends_on = [module.eks_cluster]
 }
 
 resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
