@@ -98,7 +98,7 @@ provider "kubernetes" {
 resource "kubernetes_service_account" "aws-eks-secrets-sa" {
   metadata {
     name = "aws-eks-secrets-sa"
-    namespace = "kube-system"
+    namespace = "default"
     annotations = {
       "eks.amazonaws.com/role-arn" = "arn:aws:iam::${local.aws_account_id}:role/eks-secrets-manager"
     }
@@ -132,7 +132,7 @@ resource "helm_release" "aws_secret_injector" {
   name = "secret-inject"
   chart = "secret-inject"
   repository = "https://aws-samples.github.io/aws-secret-sidecar-injector/"
-  namespace = "kube-system"
+  namespace = "default"
 }
 
 resource "aws_autoscaling_policy" "eks_autoscaling_policy" {
