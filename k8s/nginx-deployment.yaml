@@ -11,9 +11,13 @@ spec:
       app: nginx
   template:
     metadata:
+      annotations:
+        secrets.k8s.aws/sidecarInjectorWebhook: enabled
+        secrets.k8s.aws/secret-arn: arn:aws:secretsmanager:ap-southeast-2:847296384664:secret:pg_taskdb_secret-UOBckr
       labels:
         app: nginx
     spec:
+      serviceAccountName: aws-eks-secrets-sa
       containers:
       - name: nginx
         image: nginx:1.7.9
