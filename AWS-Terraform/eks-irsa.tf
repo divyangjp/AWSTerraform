@@ -1,5 +1,5 @@
 locals {
-  k8s_service_account_namespace = "kube-system"
+  k8s_service_account_namespace = "default"
   k8s_service_account_name      = "aws-eks-secrets-sa"
 }
 
