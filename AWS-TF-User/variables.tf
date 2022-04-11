@@ -10,9 +10,3 @@ variable s3-bucket-tfstate-store {
 variable "rgroup" {
   default = "rg_dev"
 }
-
-variable "pg_taskdb_password" {
-  # NO DEFAULT
-  # Provide password on the command line
-  # or tfvars file
-}

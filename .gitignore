@@ -6,6 +6,7 @@ terraform.tfplan
 *.tfplan
 terraform.tfstate
 *.backup
+*.bkp
 ./*.tfstate
 .terraform/
 *.log

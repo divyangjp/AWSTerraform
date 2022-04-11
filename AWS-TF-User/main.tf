@@ -169,13 +169,3 @@ resource "aws_dynamodb_table" "dynamodb-tfstate-lock" {
         resource_group = var.rgroup
     }
 }
-
-# Create aws secretmanager secret for rds taskdb password
-
-resource "aws_secretsmanager_secret" "pg_taskdb_secret" {
-  name = "pg_taskdb_secret"
-}
-resource "aws_secretsmanager_secret_version" "pg_taskdb_version" {
-  secret_id     = aws_secretsmanager_secret.pg_taskdb_secret.id
-  secret_string = var.pg_taskdb_password
-}
